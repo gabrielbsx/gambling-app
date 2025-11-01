@@ -8,6 +8,7 @@ export class Routes {
 
   setup() {
     const fastifyRouteAdapter = new FastifyRouteAdapter(this.app);
+
     fastifyRouteAdapter.route("POST", "/v1/users", CreateUserFactory.create());
     fastifyRouteAdapter.route(
       "POST",
