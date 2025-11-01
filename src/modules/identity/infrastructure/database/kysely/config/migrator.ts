@@ -8,6 +8,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export const identityMigration = async () => {
+  await identityDbClient.schema
+    .createSchema("identity")
+    .ifNotExists()
+    .execute();
+
   const migrator = new Migrator({
     db: identityDbClient,
     provider: new FileMigrationProvider({

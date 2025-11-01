@@ -8,6 +8,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export const commerceMigration = async () => {
+  await commerceDbClient.schema
+    .createSchema("commerce")
+    .ifNotExists()
+    .execute();
+
   const migrator = new Migrator({
     db: commerceDbClient,
     provider: new FileMigrationProvider({
