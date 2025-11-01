@@ -32,7 +32,11 @@ export class FastifyRouteAdapter implements Router {
               .send({ error: error.message });
           }
 
-          reply.status(500).send({ error: "Internal Server Error" });
+          if (error instanceof Error) {
+            return reply.status(500).send({ error: error.message });
+          }
+
+          reply.status(500).send({ error: "Unknown error occurred" });
         }
       },
     });

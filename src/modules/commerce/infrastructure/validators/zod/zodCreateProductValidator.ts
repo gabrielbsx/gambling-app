@@ -9,7 +9,7 @@ export class ZodCreateProductValidator
 {
   static schema: ZodType<CreateProductInput> = z.object({
     name: z.string(),
-    amount: z.number().positive(),
+    amount: z.number().int().positive(),
     value: z.number().positive(),
     description: z.string(),
   });

@@ -1,8 +1,8 @@
 import type { Repository } from "@/shared/domain/repositories/repository.js";
-import type { KyselyRepositoryMapper } from "../mappers/repositoryMapper.js";
 import { randomUUID } from "crypto";
 import type { Kysely, Selectable } from "kysely";
 import type { BaseTable } from "../data/base.js";
+import type { KyselyRepositoryMapper } from "../mappers/repositoryMapper.js";
 
 export class KyselyRepository<TEntity, TModel extends BaseTable>
   implements Repository<string, TEntity>
@@ -25,7 +25,7 @@ export class KyselyRepository<TEntity, TModel extends BaseTable>
       .executeTakeFirst();
 
     return data
-      ? this.mapper.toDomain((data as unknown) as Selectable<TModel>)
+      ? this.mapper.toDomain(data as unknown as Selectable<TModel>)
       : null;
   }
 
@@ -41,29 +41,30 @@ export class KyselyRepository<TEntity, TModel extends BaseTable>
   async delete(id: string, deletedBy: string = "system"): Promise<void> {
     await this.dbClient
       .updateTable(this.tableName)
-      .set({ deleted_at: new Date(), deleted_by: deletedBy } as any)
+      .set({
+        deleted_at: new Date(),
+        deleted_by: deletedBy,
+      } as unknown as TModel)
       .where("id", "=", id)
       .execute();
   }
 
   async findAll(): Promise<TEntity[]> {
-    const data = await this.dbClient
+    const data = (await this.dbClient
       .selectFrom(this.tableName)
       .selectAll()
-      .execute();
+      .execute()) as unknown as Selectable<TModel>[];
 
-    return data.map((item) =>
-      this.mapper.toDomain((item as unknown) as Selectable<TModel>)
-    );
+    return data.map((item) => this.mapper.toDomain(item));
   }
 
   async update(entity: TEntity): Promise<void> {
-    const model = this.mapper.toModel(entity);
+    const model = this.mapper.toModel(entity) as TModel;
 
     await this.dbClient
       .updateTable(this.tableName)
-      .set(model as any)
-      .where("id", "=", (model as any).id)
+      .set(model)
+      .where("id", "=", model.id)
       .execute();
   }
 
@@ -79,7 +80,7 @@ export class KyselyRepository<TEntity, TModel extends BaseTable>
         .selectAll()
         .offset(offset)
         .limit(limit)
-        .execute(),
+        .execute() as Promise<Selectable<TModel>[]>,
       this.dbClient
         .selectFrom(this.tableName)
         .select(this.dbClient.fn.count<number>("id").as("total"))
@@ -89,9 +90,7 @@ export class KyselyRepository<TEntity, TModel extends BaseTable>
     const total = totalResult ? Number(totalResult.total) : 0;
 
     return {
-      data: data.map((item) =>
-        this.mapper.toDomain((item as unknown) as Selectable<TModel>)
-      ),
+      data: data.map((item) => this.mapper.toDomain(item)),
       total,
       page,
       limit,

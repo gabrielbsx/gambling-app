@@ -18,7 +18,7 @@ export class CreateProductControllerImpl implements CreateProductController {
   ) {}
 
   async handle(input: HttpRequest): Promise<HttpResponse<CreateProductOutput>> {
-    const validatedInput = await this.createProductValidator.validate(input);
+    const validatedInput = await this.createProductValidator.validate(input.body);
 
     if (!validatedInput) {
       throw new BadRequestException("Invalid input");

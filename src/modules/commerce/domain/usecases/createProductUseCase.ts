@@ -9,6 +9,12 @@ export type CreateProductInput = Readonly<{
 
 export type CreateProductOutput = Readonly<{
   id: string;
+  name: string;
+  description: string;
+  value: number;
+  amount: number;
+  createdAt: Date;
+  createdBy: string;
 }>;
 
 export interface CreateProductUseCase

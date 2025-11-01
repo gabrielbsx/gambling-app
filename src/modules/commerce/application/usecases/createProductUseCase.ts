@@ -19,6 +19,6 @@ export class CreateProductUseCaseImpl implements CreateProductUseCase {
       createdAt: new Date(),
     });
 
-    return { id: productId };
+    return { ...product.props };
   }
 }
