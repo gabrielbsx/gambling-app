@@ -1,5 +1,5 @@
 import { addBase } from "@/shared/infrastructure/database/kysely/migrations/base.js";
-import { Kysely } from "kysely";
+import { Kysely, sql } from "kysely";
 import type { CommerceDatabase } from "../data/index.js";
 
 export async function up(db: Kysely<CommerceDatabase>): Promise<void> {
@@ -10,11 +10,20 @@ export async function up(db: Kysely<CommerceDatabase>): Promise<void> {
     .createTable("products")
     .ifNotExists()
     .$call(addBase)
-    .addColumn("name", "varchar(50)", (col) => col.notNull())
-    .addColumn("description", "varchar(200)", (col) => col.notNull())
-    .addColumn("value", "decimal", (col) => col.notNull())
-    .addColumn("amount", "integer", (col) => col.notNull())
     .execute();
+
+  await sql`ALTER TABLE commerce.products ADD COLUMN IF NOT EXISTS name varchar(50)`.execute(
+    db
+  );
+  await sql`ALTER TABLE commerce.products ADD COLUMN IF NOT EXISTS description varchar(200)`.execute(
+    db
+  );
+  await sql`ALTER TABLE commerce.products ADD COLUMN IF NOT EXISTS value decimal`.execute(
+    db
+  );
+  await sql`ALTER TABLE commerce.products ADD COLUMN IF NOT EXISTS amount integer`.execute(
+    db
+  );
 }
 
 export async function down(db: Kysely<CommerceDatabase>): Promise<void> {

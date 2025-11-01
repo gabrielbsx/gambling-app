@@ -1,3 +1,4 @@
+import { addBase } from "@/shared/infrastructure/database/kysely/migrations/base.js";
 import { Kysely, sql } from "kysely";
 import type { IdentityDatabase } from "../data/index.js";
 
@@ -8,22 +9,61 @@ export async function up(db: Kysely<IdentityDatabase>): Promise<void> {
     .withSchema("identity")
     .createTable("users")
     .ifNotExists()
-    .addColumn("id", "uuid", (col) =>
-      col.primaryKey().defaultTo(sql`gen_random_uuid()`)
-    )
-    .addColumn("name", "varchar(50)", (col) => col.notNull())
-    .addColumn("username", "varchar(50)", (col) => col.notNull().unique())
-    .addColumn("email", "varchar(100)", (col) => col.notNull().unique())
-    .addColumn("password", "varchar(50)", (col) => col.notNull())
-    .addColumn("created_at", "timestamp", (col) =>
-      col.notNull().defaultTo(sql`now()`)
-    )
-    .addColumn("created_by", "varchar(50)", (col) => col.notNull())
-    .addColumn("updated_at", "timestamp")
-    .addColumn("updated_by", "varchar(50)")
-    .addColumn("deleted_at", "timestamp")
-    .addColumn("deleted_by", "varchar(50)")
+    .$call(addBase)
     .execute();
+
+  await sql`ALTER TABLE identity.users ADD COLUMN IF NOT EXISTS name varchar(50)`.execute(
+    db
+  );
+  await sql`ALTER TABLE identity.users ADD COLUMN IF NOT EXISTS username varchar(50)`.execute(
+    db
+  );
+  await sql`ALTER TABLE identity.users ADD COLUMN IF NOT EXISTS email varchar(100)`.execute(
+    db
+  );
+  await sql`ALTER TABLE identity.users ADD COLUMN IF NOT EXISTS password varchar(50)`.execute(
+    db
+  );
+  await sql`ALTER TABLE identity.users ADD COLUMN IF NOT EXISTS updated_at timestamp`.execute(
+    db
+  );
+  await sql`ALTER TABLE identity.users ADD COLUMN IF NOT EXISTS updated_by varchar(50)`.execute(
+    db
+  );
+  await sql`ALTER TABLE identity.users ADD COLUMN IF NOT EXISTS deleted_at timestamp`.execute(
+    db
+  );
+  await sql`ALTER TABLE identity.users ADD COLUMN IF NOT EXISTS deleted_by varchar(50)`.execute(
+    db
+  );
+
+  await sql`
+    DO $$
+    BEGIN
+      IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint
+        WHERE conname = 'users_username_unique'
+          AND conrelid = 'identity.users'::regclass
+      ) THEN
+        ALTER TABLE identity.users
+          ADD CONSTRAINT users_username_unique UNIQUE (username);
+      END IF;
+    END $$;
+  `.execute(db);
+
+  await sql`
+    DO $$
+    BEGIN
+      IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint
+        WHERE conname = 'users_email_unique'
+          AND conrelid = 'identity.users'::regclass
+      ) THEN
+        ALTER TABLE identity.users
+          ADD CONSTRAINT users_email_unique UNIQUE (email);
+      END IF;
+    END $$;
+  `.execute(db);
 }
 
 export async function down(db: Kysely<IdentityDatabase>): Promise<void> {
