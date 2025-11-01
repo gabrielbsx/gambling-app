@@ -1,0 +1,32 @@
+{
+  "name": "apps",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node --import tsx --watch --env-file=.env.development src/main/bootstrap/index.ts",
+    "dev:migrate": "node --import tsx --env-file=.env.development src/main/bootstrap/migration.ts"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.38.0",
+    "@types/node": "^24.9.1",
+    "@types/pg": "^8.15.5",
+    "eslint": "^9.38.0",
+    "globals": "^16.4.0",
+    "tsup": "^8.5.0",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.2"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.19.5",
+    "fastify": "^5.6.1",
+    "hono": "^4.10.3",
+    "kysely": "^0.28.8",
+    "pg": "^8.16.3",
+    "zod": "^4.1.12"
+  }
+}
