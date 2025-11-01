@@ -13,8 +13,8 @@ import type { CreateProductValidator } from "../contracts/validators/createProdu
 
 export class CreateProductControllerImpl implements CreateProductController {
   constructor(
-    private readonly createProductUseCase: CreateProductUseCase,
-    private readonly createProductValidator: CreateProductValidator
+    private readonly createProductValidator: CreateProductValidator,
+    private readonly createProductUseCase: CreateProductUseCase
   ) {}
 
   async handle(input: HttpRequest): Promise<HttpResponse<CreateProductOutput>> {
