@@ -19,6 +19,8 @@ export class CreateProductUseCaseImpl implements CreateProductUseCase {
       createdAt: new Date(),
     });
 
+    await this.productRepository.save(product);
+
     return { ...product.props };
   }
 }
