@@ -5,7 +5,7 @@ import type {
   CreateUserOutput,
   CreateUserUseCase,
 } from "@/modules/identity/domain/usecases/createUserUseCase.js";
-import type { TokenService } from "../contracts/tokenizer/tokenService.js";
+import type { TokenService } from "@/shared/application/contracts/tokenService.js";
 
 export class CreateUserUseCaseImpl implements CreateUserUseCase {
   constructor(

@@ -8,7 +8,10 @@
   "main": "index.js",
   "scripts": {
     "dev": "node --import tsx --watch --env-file=.env.development src/main/bootstrap/index.ts",
-    "dev:migrate": "node --import tsx --env-file=.env.development src/main/bootstrap/migration.ts"
+    "dev:migrate": "node --import tsx --env-file=.env.development src/main/bootstrap/migration.ts",
+    "dev:sync": "node --import tsx --env-file=.env.development src/main/bootstrap/sync.ts",
+    "dev:sync:identity": "node --import tsx --env-file=.env.development src/modules/identity/infrastructure/database/kysely/config/sync.ts",
+    "dev:sync:commerce": "node --import tsx --env-file=.env.development src/modules/commerce/infrastructure/database/kysely/config/sync.ts"
   },
   "devDependencies": {
     "@eslint/js": "^9.38.0",

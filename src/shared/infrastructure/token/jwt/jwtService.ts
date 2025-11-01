@@ -1,6 +1,6 @@
 import { env } from "@/main/bootstrap/env.js";
+import type { TokenService } from "@/shared/application/contracts/tokenService.js";
 import jwt from "jsonwebtoken";
-import type { TokenService } from "../../application/contracts/tokenizer/tokenService.js";
 
 export class JwtService implements TokenService {
   async generate<T = unknown>(data: T): Promise<string> {
