@@ -11,6 +11,9 @@ export async function up(db: Kysely<CommerceDatabase>): Promise<void> {
     .ifNotExists()
     .$call(addBase)
     .addColumn("name", "varchar(50)", (col) => col.notNull())
+    .addColumn("description", "varchar(200)", (col) => col.notNull())
+    .addColumn("value", "decimal", (col) => col.notNull())
+    .addColumn("amount", "integer", (col) => col.notNull())
     .execute();
 }
 
