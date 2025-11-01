@@ -5,8 +5,8 @@ import { Routes } from "./routes.js";
 class App {
   static api = fastify();
 
-  static async run() {
-    const routes = new Routes(this.api);
+  async run() {
+    const routes = new Routes(App.api);
 
     routes.setup();
 
@@ -26,4 +26,4 @@ class App {
   }
 }
 
-App.run().catch(console.error);
+new App().run().catch(console.error);
